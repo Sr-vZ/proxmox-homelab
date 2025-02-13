@@ -72,8 +72,139 @@ source /etc/network/interfaces.d/*
 
 Virtual router for 10.0.0.1/24
 This will DHCP and Internet Gateway for 10.0.0.1/24
-Might require SNAT config
+Require SNAT config
+
+VyOS config:
+
+```
+interfaces {
+    ethernet eth0 {
+        address dhcp
+        description WAN
+        hw-id bc:24:11:b7:eb:56
+        offload {
+            gro
+            gso
+            sg
+            tso
+        }
+    }
+    ethernet eth1 {
+        address 10.0.0.1/24
+        description LAN
+        hw-id bc:24:11:10:b1:c8
+        offload {
+            gro
+            gso
+            sg
+            tso
+        }
+    }
+    loopback lo {
+    }
+}
+nat {
+    source {
+        rule 100 {
+            log
+            outbound-interface {
+                name eth0
+            }
+            source {
+                address 10.0.0.0/24
+            }
+            translation {
+                address masquerade
+            }
+        }
+    }
+}
+service {
+    dhcp-server {
+        shared-network-name LAN {
+            subnet 10.0.0.0/24 {
+                lease 86400
+                option {
+                    default-router 10.0.0.1
+                }
+                range 0 {
+                    start 10.0.0.9
+                    stop 10.0.0.254
+                }
+                subnet-id 1
+            }
+        }
+    }
+    dns {
+        forwarding {
+            allow-from 10.0.0.0/24
+            cache-size 0
+            listen-address 10.0.0.1
+            listen-address 192.168.0.181
+            name-server 192.168.0.1 {
+            }
+        }
+    }
+    ntp {
+        allow-client {
+            address 127.0.0.0/8
+            address 169.254.0.0/16
+            address 10.0.0.0/8
+            address 172.16.0.0/12
+            address 192.168.0.0/16
+            address ::1/128
+            address fe80::/10
+            address fc00::/7
+        }
+        server time1.vyos.net {
+        }
+        server time2.vyos.net {
+        }
+        server time3.vyos.net {
+        }
+    }
+    ssh {
+        port 22
+    }
+}
+system {
+    config-management {
+        commit-revisions 100
+    }
+    console {
+        device ttyS0 {
+            speed 115200
+        }
+    }
+    host-name vyos
+    login {
+        user vyos {
+            authentication {
+                encrypted-password ****************
+                plaintext-password ****************
+            }
+        }
+    }
+    syslog {
+        global {
+            facility all {
+                level info
+            }
+            facility local7 {
+                level debug
+            }
+        }
+    }
+}
+```
 
 # Jump Server
 
 A jump host might be required for SSH into the Proxmox VMs as those won't be available for 192.168.0.1/24
+Using vyos as jumpserver as it'll be the only VM which will be connected to 192.168.0.1/24 subnet
+
+```
+ssh -J vyos@<vyos-IP> user@<vm-IP>
+```
+
+Add ssh public key better seamless passwordless jumping around
