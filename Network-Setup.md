@@ -80,6 +80,12 @@ config/vyos_ruuning_config.conf
 Config Disaster Recovery:
 Load config from this Git repo
 
+```
+load https://raw.githubusercontent.com/Sr-vZ/proxmox-homelab/74073c83ac8b1d430ceb247772e3b069eec90038/config/vyos_running_config.conf
+save
+commit
+```
+
 # Jump Server
 
 A jump host might be required for SSH into the Proxmox VMs as those won't be available for 192.168.0.1/24
