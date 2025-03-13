@@ -3,7 +3,7 @@
 The proxmox is currently connected via a tenda router with a LAN and WLAN as backup
 
 192.168.0.250 LAN
-192.168.0.254 WLAN
+192.168.0.251 WLAN
 
 This is from Tenda 192.168.0.100 DHCP Pool
 
