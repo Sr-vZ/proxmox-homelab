@@ -70,6 +70,23 @@ source /etc/network/interfaces.d/*
 
 # VyOS
 
+VyOS First time setup:
+```
+#login with (vyos/vyos)
+install image
+# follow the instructions and reboot
+# after reboot
+config
+set interfaces ethernet eth0 address dhcp
+set system name-server eth0
+set service ssh port 22
+commit
+save
+load https://raw.githubusercontent.com/Sr-vZ/proxmox-homelab/74073c83ac8b1d430ceb247772e3b069eec90038/config/vyos_running_config.conf
+commit
+save
+```
+
 Virtual router for 10.0.0.1/24
 This will DHCP and Internet Gateway for 10.0.0.1/24
 Require SNAT config
