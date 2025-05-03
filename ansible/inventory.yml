@@ -1,0 +1,15 @@
+# Proxmox Inventory
+all:
+  children:
+    proxmox:
+      hosts:
+        proxmox-node-1:
+          ansible_host: 192.168.0.251
+    ubuntu:
+      hosts:
+        ubuntu-vm-1:
+          ansible_host: pve-ubuntu.pve.local
+    debian:
+      hosts:
+        debian-vm-1:
+          ansible_host: pve-debian.pve.local

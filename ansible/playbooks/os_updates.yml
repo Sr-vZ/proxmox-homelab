@@ -1,0 +1,58 @@
+# os_updates.yml:
+
+---
+- name: Update Proxmox host
+  hosts: proxmox
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+
+    # - name: Reboot if needed
+    #   reboot:
+    #     msg: "Rebooting to apply updates"
+    #     pre_reboot_delay: 10
+    #     post_reboot_delay: 30
+    #   when: ansible_facts['os_family'] == "Debian"
+
+- name: Update Ubuntu and Debian VMs
+  hosts: ubuntu:debian
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade packages
+      apt:
+        upgrade: dist
+
+    # - name: Reboot if needed
+    #   reboot:
+    #     msg: "Rebooting VM"
+    #     pre_reboot_delay: 10
+    #     post_reboot_delay: 30
+    #   when: ansible_facts['os_family'] == "Debian"
+
+# - name: Update CentOS VMs
+#   hosts: centos_vms
+#   become: true
+#   tasks:
+#     - name: Upgrade all packages
+#       yum:
+#         name: '*'
+#         state: latest
+
+#     - name: Reboot if needed
+#       reboot:
+#         msg: "Rebooting CentOS VM"
+#         pre_reboot_delay: 10
+#         post_reboot_delay: 30
+#       when: ansible_facts['os_family'] == "RedHat"
